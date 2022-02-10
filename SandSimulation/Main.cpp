@@ -1,53 +1,24 @@
 #include<iostream>
 #include<SDL.h>
+#include "particle.h"
+#include "particle_type.h"
+#include "basic_constants.h"
+#include "world_matrix.h"
+
 #undef main
 
 //SCREEN CONSTANTS
-const int SCREEN_WIDTH = 500;
-const int SCREEN_HEIGHT = 500;
+int PARTICLE_ID = 1;
 
 //functions
 bool init();//initializes SDL for use
 void close();//close the program
 void handelUserInput(SDL_Event* e);
 
-//class
-//_id:1
-class Sand {
-public:
-	Sand();
-	void render();
-	int* getXPos();
-	int* getYPos();
-private:
-	int mWidth;
-	int mHeight;
-	
-	int mXPos;
-	int mYPos;
-
-	SDL_Rect mFillRect;
-};
-
-class CellularMatrix {
-public:
-	CellularMatrix();
-	void worldChecker();//check the Cellular Matrix
-	void sandChecker(int xPos, int yPos);//Sand Particle Logic
-	void worldRenderer();//render the different particles
-	void generatePixel();//generate pixel at mouse position
-
-	int mWorldMatrix[SCREEN_HEIGHT / 10][SCREEN_WIDTH / 10];
-	bool mShouldGeneratePixel;
-private:
-	int mXSize;
-	int mYSize;
-};
-
 //GLOBAL VARIABLES
 SDL_Window* gWindow=NULL;
 SDL_Renderer* gRenderer = NULL;
-CellularMatrix gameWorld;
+WorldMatrix gameWorld;
 
 void main() {
 	if (!init()) {
@@ -70,9 +41,9 @@ void main() {
 
 		//draw stuff here
 		gameWorld.worldChecker();
-		gameWorld.worldRenderer();
+		gameWorld.worldRenderer(gRenderer);
 		if (gameWorld.mShouldGeneratePixel) {
-			gameWorld.generatePixel();
+			gameWorld.generatePixel(PARTICLE_ID);
 		}
 
 		//Update screen
@@ -114,83 +85,10 @@ void handelUserInput(SDL_Event* e) {
 	if (e->type == SDL_MOUSEBUTTONUP) {
 		gameWorld.mShouldGeneratePixel = false;
 	}
-}
-
-
-//SAND
-Sand::Sand() {
-	mWidth = 10;
-	mHeight = 10;
-	mXPos = 10;
-	mYPos = 10;
-	mFillRect = {mXPos,mYPos,mWidth,mHeight};
-}
-void Sand::render() {
-	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
-	mFillRect.x = mXPos;
-	mFillRect.y = mYPos;
-	SDL_RenderFillRect(gRenderer, &mFillRect);
-}
-int* Sand::getXPos() {
-	return &mXPos;
-}
-
-int* Sand::getYPos() {
-	return &mYPos;
-}
-
-//CELLULAR MATRIX
-CellularMatrix::CellularMatrix() {
-	mXSize = SCREEN_WIDTH / 10;
-	mYSize = SCREEN_HEIGHT / 10;
-	mShouldGeneratePixel = false;
-	//intiliaze the matrix with 0s
-	for (int y = 0; y < mYSize; y++) {
-		for (int x = 0; x < mXSize; x++) {
-			mWorldMatrix[y][x] =0;
+	if (e->type == SDL_KEYDOWN && e->key.repeat == 0) {
+		switch (e->key.keysym.sym) {
+			case SDLK_1:PARTICLE_ID = SAND_ID; break;
+			case SDLK_2:PARTICLE_ID = WATER_ID; break;
 		}
 	}
-}
-
-
-void CellularMatrix::worldChecker() {
-	for (int y = mYSize-1; y >=0; y--) {
-		for (int x = 0; x < mXSize; x++) {
-			if (mWorldMatrix[y][x] == 1) sandChecker(x,y);
-		}
-	}
-}
-
-void CellularMatrix::sandChecker(int xPos, int yPos) {
-	if (mWorldMatrix[yPos + 1][xPos] == 0 && yPos+1<mYSize) {
-		mWorldMatrix[yPos + 1][xPos] = 1;
-		mWorldMatrix[yPos][xPos] = 0;
-	}
-	else if (mWorldMatrix[yPos + 1][xPos + 1] == 0 && yPos + 1 < mYSize && xPos + 1 < mXSize) {
-		mWorldMatrix[yPos + 1][xPos+1] = 1;
-		mWorldMatrix[yPos][xPos] = 0;
-	}
-	else if (mWorldMatrix[yPos + 1][xPos - 1] == 0 && yPos + 1 < mYSize && xPos - 1 >= 0) {
-		mWorldMatrix[yPos + 1][xPos - 1] = 1;
-		mWorldMatrix[yPos][xPos] = 0;
-	}
-}
-
-void CellularMatrix::worldRenderer() {
-	for (int y = 0; y < mYSize; y++) {
-		for (int x = 0; x < mXSize; x++) {
-			if (mWorldMatrix[y][x] == 1) {//render sand
-				Sand sandObject;
-				*sandObject.getXPos() = x * 10;
-				*sandObject.getYPos() = y * 10;
-				sandObject.render();
-			}
-		}
-	}
-}
-
-void CellularMatrix::generatePixel() {
-	int x, y;
-	SDL_GetMouseState(&x, &y);
-	gameWorld.mWorldMatrix[y / 10][x / 10] = 1;
 }

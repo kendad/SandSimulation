@@ -18,5 +18,31 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="particle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="world_matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="particle_logic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="particle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="particle_type.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world_matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="basic_constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="partilce_logic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
