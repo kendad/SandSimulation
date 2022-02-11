@@ -89,6 +89,10 @@ void handelUserInput(SDL_Event* e) {
 		switch (e->key.keysym.sym) {
 			case SDLK_1:PARTICLE_ID = SAND_ID; break;
 			case SDLK_2:PARTICLE_ID = WATER_ID; break;
+			case SDLK_3:PARTICLE_ID = WOOD_ID; break;
+			case SDLK_e:PARTICLE_ID = BLANK_ID; break;//works as an eraser
+			case SDLK_5:PARTICLE_ID = SMOKE_ID; break;
+			case SDLK_f:PARTICLE_ID = FIRE_ID_1; break;
 		}
 	}
 }
