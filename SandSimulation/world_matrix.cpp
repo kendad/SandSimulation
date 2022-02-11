@@ -2,6 +2,7 @@
 #include "particle.h"
 #include "particle_type.h"
 #include "partilce_logic.h"
+#include <iostream>
 
 WorldMatrix::WorldMatrix() {
 	mXSize = SCREEN_WIDTH / divide_world_factor;
@@ -25,19 +26,18 @@ void WorldMatrix::worldChecker() {
 }
 
 void WorldMatrix::worldRenderer(SDL_Renderer* renderer) {
-
 	for (int y = 0; y < mYSize; y++) {
 		for (int x = 0; x < mXSize; x++) {
 			if (mWorldMatrix[y][x] == 1) {//render sand
 				Particle sandObject;
-				*sandObject.getXPos() = x * divide_world_factor;
-				*sandObject.getYPos() = y * divide_world_factor;
+				*sandObject.getXPos() = (x * divide_world_factor);
+				*sandObject.getYPos() = (y * divide_world_factor);
 				sandObject.render(SAND_COLOR, renderer);
 			}
 			if (mWorldMatrix[y][x] == 2) {//render water
 				Particle waterObject;
-				*waterObject.getXPos() = x * divide_world_factor;
-				*waterObject.getYPos() = y * divide_world_factor;
+				*waterObject.getXPos() = (x * divide_world_factor);
+				*waterObject.getYPos() = (y * divide_world_factor);
 				waterObject.render(WATER_COLOR, renderer);
 			}
 		}
