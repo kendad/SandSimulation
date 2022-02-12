@@ -14,14 +14,14 @@
 const int WATER_DISPERSION_RATE = 5;
 const int GRAVITY = 3;
 
-void sandChecker(int xPos,int yPos, int (*worldMatrix)[SCREEN_HEIGHT / divide_world_factor][SCREEN_WIDTH / divide_world_factor],int* worldXSize,int* worldYSize) {
+void sandChecker(int xPos, int yPos, int(*worldMatrix)[SCREEN_HEIGHT / divide_world_factor][SCREEN_WIDTH / divide_world_factor], int* worldXSize, int* worldYSize) {
 	srand(SDL_GetTicks());
 	//partice falls down with gravity if bottom space is empty
 	if ((*worldMatrix)[yPos + 1][xPos] == 0 && yPos + 1 < *worldYSize) {
 		for (int i = 1; i <= GRAVITY; i++) {
 			if ((*worldMatrix)[yPos + i][xPos] == 0 && yPos + i < *worldYSize) {
 				(*worldMatrix)[yPos + i][xPos] = 1;
-				(*worldMatrix)[yPos+(i-1)][xPos] = 0;
+				(*worldMatrix)[yPos + (i - 1)][xPos] = 0;
 			}
 		}
 	}
@@ -39,12 +39,12 @@ void sandChecker(int xPos,int yPos, int (*worldMatrix)[SCREEN_HEIGHT / divide_wo
 	else if ((*worldMatrix)[yPos + 1][xPos] == 2 && yPos + 1 < *worldYSize) {
 		(*worldMatrix)[yPos + 1][xPos] = 1;
 		(*worldMatrix)[yPos][xPos] = 2;
-	} 
+	}
 	//when the sand particle hits something 
-	
+
 }
 
-void waterChecker(int xPos, int yPos, int (*worldMatrix)[SCREEN_HEIGHT / divide_world_factor][SCREEN_WIDTH / divide_world_factor],int* worldXSize, int* worldYSize) {
+void waterChecker(int xPos, int yPos, int(*worldMatrix)[SCREEN_HEIGHT / divide_world_factor][SCREEN_WIDTH / divide_world_factor], int* worldXSize, int* worldYSize) {
 	//partice falls down with gravity if bottom space is empty
 	if ((*worldMatrix)[yPos + 1][xPos] == 0 && yPos + 1 < *worldYSize) {
 		for (int i = 1; i <= GRAVITY; i++) {
@@ -59,7 +59,7 @@ void waterChecker(int xPos, int yPos, int (*worldMatrix)[SCREEN_HEIGHT / divide_
 		for (int i = 1; i <= WATER_DISPERSION_RATE; i++) {
 			if ((*worldMatrix)[yPos][xPos + i] == 0 && xPos + i < *worldXSize) {
 				(*worldMatrix)[yPos][xPos + i] = 2;
-				(*worldMatrix)[yPos][xPos+(i-1)] = 0;
+				(*worldMatrix)[yPos][xPos + (i - 1)] = 0;
 			}
 		}
 	}
@@ -68,30 +68,34 @@ void waterChecker(int xPos, int yPos, int (*worldMatrix)[SCREEN_HEIGHT / divide_
 		for (int i = 1; i <= WATER_DISPERSION_RATE; i++) {
 			if ((*worldMatrix)[yPos][xPos - i] == 0 && xPos - i >= 0) {
 				(*worldMatrix)[yPos][xPos - i] = 2;
-				(*worldMatrix)[yPos][xPos-(i-1)] = 0;
+				(*worldMatrix)[yPos][xPos - (i - 1)] = 0;
 			}
 		}
 	}
 }
 
 void smokeChecker(int xPos, int yPos, int(*worldMatrix)[SCREEN_HEIGHT / divide_world_factor][SCREEN_WIDTH / divide_world_factor], int* worldXSize, int* worldYSize) {
-	if ((*worldMatrix)[yPos - 1][xPos] == 0 && yPos - 1 >=0) {
-		/*for (int i = 0; i < GRAVITY; i++) {
+	if ((*worldMatrix)[yPos - 1][xPos] == 0 && yPos - 1 >= 0) {
+		for (int i = 0; i < GRAVITY; i++) {
 			if ((*worldMatrix)[yPos - i][xPos] == 0 && yPos - i >= 0) {
 				(*worldMatrix)[yPos - i][xPos] = 5;
-				(*worldMatrix)[yPos-(i-1)][xPos] = 0;
+				(*worldMatrix)[yPos - (i - 1)][xPos] = 0;
 			}
-		}*/
-		(*worldMatrix)[yPos - 1][xPos] = 5;
-		(*worldMatrix)[yPos][xPos] = 0;
+		}
+		//(*worldMatrix)[yPos - 1][xPos] = 5;
+		//(*worldMatrix)[yPos][xPos] = 0;
 	}
 	else if ((*worldMatrix)[yPos - 1][xPos + 1] == 0 && yPos - 1 >= 0 && xPos + 1 < *worldYSize) {
 		(*worldMatrix)[yPos - 1][xPos + 1] = 5;
 		(*worldMatrix)[yPos][xPos] = 0;
-	}else if ((*worldMatrix)[yPos - 1][xPos - 1] == 0 && yPos - 1 >= 0 && xPos - 1 >=0) {
+	}
+	else if ((*worldMatrix)[yPos - 1][xPos - 1] == 0 && yPos - 1 >= 0 && xPos - 1 >= 0) {
 		(*worldMatrix)[yPos - 1][xPos - 1] = 5;
 		(*worldMatrix)[yPos][xPos] = 0;
 	}
+	else if ((*worldMatrix)[yPos - 1][xPos] == 2 && yPos-1 >=0){
+		(*worldMatrix)[yPos][xPos] = 0;
+    }
 	else {
 		(*worldMatrix)[yPos][xPos] = 0;
 	}
@@ -99,13 +103,9 @@ void smokeChecker(int xPos, int yPos, int(*worldMatrix)[SCREEN_HEIGHT / divide_w
 
 void fireChecker(int xPos, int yPos, int(*worldMatrix)[SCREEN_HEIGHT / divide_world_factor][SCREEN_WIDTH / divide_world_factor], int* worldXSize, int* worldYSize) {
 	srand(SDL_GetTicks());
-	int spreadFactor = rand() % 10 + 1;
-
-	/*if ((*worldMatrix)[yPos-1][xPos] == 3 && yPos-1>=0) {
-		(*worldMatrix)[yPos - 1][xPos] == 7;
-	}*/
-	//std::cout << spreadFactor << std::endl;
-	if (spreadFactor==10) {
+	int spreadFactor = rand() % 200 + 1;
+	//fire spreads if it finds something like wood with probabilty of spreadFactor
+	if (spreadFactor<=10 && (*worldMatrix)[yPos][xPos]==8) {
 		if ((*worldMatrix)[yPos - 1][xPos] == 3 && yPos - 1 >= 0) {
 			(*worldMatrix)[yPos-1][xPos] = 7;
 		}else
@@ -135,12 +135,35 @@ void fireChecker(int xPos, int yPos, int(*worldMatrix)[SCREEN_HEIGHT / divide_wo
 		}
 	}
 
-	if ((*worldMatrix)[yPos][xPos] == 7 && (*worldMatrix)[yPos - 1][xPos]==0 && yPos-1>=0 ) {
+	if ((*worldMatrix)[yPos][xPos] == 7 && yPos-1>=0 ) {
 		(*worldMatrix)[yPos - 1][xPos] = 8;
+		if ((*worldMatrix)[yPos + 1][xPos] == 3) (*worldMatrix)[yPos+1][xPos] = 7;
+		//when fire interacts with sand or water
+		if ((*worldMatrix)[yPos - 1][xPos] == 2 && yPos - 1 >= 0) (*worldMatrix)[yPos][xPos] = 5;
+		if ((*worldMatrix)[yPos - 1][xPos] == 1 && yPos - 1 >= 0) (*worldMatrix)[yPos][xPos] = 1;
+
+		//probability for the fire dying out
+		srand(SDL_GetTicks());
+		int dousingFactor = rand() % 100 + 1;
+		if (dousingFactor == 10) {
+			(*worldMatrix)[yPos][xPos] = 0;
+		}
 	}
 
 	if ((*worldMatrix)[yPos][xPos] == 8) {
-		(*worldMatrix)[yPos + 1][xPos] = 0;
-		if((*worldMatrix)[yPos-1][xPos] == 0) (*worldMatrix)[yPos][xPos] = 5;
+		(*worldMatrix)[yPos][xPos] = 7;
+		if ((*worldMatrix)[yPos - 1][xPos] == 0 || (*worldMatrix)[yPos - 1][xPos] == 8) {
+			(*worldMatrix)[yPos][xPos] = 5;
+		}
+		//when fire interacts with sand or water
+		if ((*worldMatrix)[yPos - 1][xPos] == 2 && yPos - 1 >= 0) (*worldMatrix)[yPos][xPos] = 5;
+		if ((*worldMatrix)[yPos - 1][xPos] == 1 && yPos - 1 >= 0) (*worldMatrix)[yPos][xPos] = 1;
+	}
+
+	//probabilty of the whole fire to go out
+	srand(SDL_GetTicks());
+	int dousingFactor = rand() % 100 + 1;
+	if (dousingFactor == 10) {
+		(*worldMatrix)[yPos][xPos] = 0;
 	}
 }

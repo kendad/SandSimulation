@@ -21,8 +21,6 @@ void WorldMatrix::worldChecker() {
 		for (int x = 0; x < mXSize; x++) {
 			if (mWorldMatrix[y][x] == SAND_ID) sandChecker(x, y,&mWorldMatrix,&mXSize,&mYSize);//check if the grid world has sand
 			if (mWorldMatrix[y][x] == WATER_ID) waterChecker(x, y, &mWorldMatrix, &mXSize, &mYSize);//check if the grid world has water
-
-			//if (mWorldMatrix[y][x] == FIRE_ID_1) fireChecker(x, y, &mWorldMatrix, &mXSize, &mYSize);//check if the grid world has fire_1
 			if (mWorldMatrix[y][x] == FIRE_ID_2) fireChecker(x, y, &mWorldMatrix, &mXSize, &mYSize);//check if the grid world has fire_2
 		}
 	}
@@ -31,7 +29,6 @@ void WorldMatrix::worldChecker() {
 		for (int x = 0; x < mXSize; x++) {
 			if (mWorldMatrix[y][x] == SMOKE_ID) smokeChecker(x, y, &mWorldMatrix, &mXSize, &mYSize);//check if the grid world has smoke
 			if (mWorldMatrix[y][x] == FIRE_ID_1) fireChecker(x, y, &mWorldMatrix, &mXSize, &mYSize);//check if the grid world has fire_1
-			//if (mWorldMatrix[y][x] == FIRE_ID_2) fireChecker(x, y, &mWorldMatrix, &mXSize, &mYSize);//check if the grid world has fire_2
 		}
 	}
 }
@@ -81,7 +78,7 @@ void WorldMatrix::worldRenderer(SDL_Renderer* renderer) {
 
 void WorldMatrix::generatePixel(int particle_id) {
 	int x, y;
-	int volume = divide_world_factor+5;
+	int volume = divide_world_factor+7;
 	SDL_GetMouseState(&x, &y);
 	//render less smoke
 	if (particle_id == SMOKE_ID || particle_id==FIRE_ID_1) {
@@ -92,5 +89,4 @@ void WorldMatrix::generatePixel(int particle_id) {
 			mWorldMatrix[(y / divide_world_factor)+i][(x / divide_world_factor)+j] = particle_id;
 		}
 	}
-	//mWorldMatrix[y / divide_world_factor][x / divide_world_factor] = particle_id;
 }
